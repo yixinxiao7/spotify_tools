@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 
+
 const CLIENT_ID = "f302afa9ce974067be62558b9cbcca0f";
 const AUTHORIZE_ENDPOINT = "https://accounts.spotify.com/authorize";
-const REDIRECT_URI = "http://localhost:8000/authorize";  // TODO: change this
+const REDIRECT_URI = "http://localhost:8000/home";  // TODO: change this
 const SCOPES = [
     'playlist-modify-public',
     'playlist-modify-private',

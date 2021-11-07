@@ -3,14 +3,17 @@ import React, { Component } from "react";
 import { render } from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
-import Login from './pages/Login.jsx';
+import OnboardingPage from './pages/OnboardingPage.jsx';
+import HomePage from './pages/HomePage.jsx';
+
 
 class App extends Component {
   render() {
     return (
       <BrowserRouter>
         <Switch>
-          <Route path="/authorize" component={Login} />
+          <Route exact path="/" component={OnboardingPage} />
+          <Route exact path="/home" component={HomePage} />
           {/* <Route exact path="/404" component = {NotFound}/> */}
           {/* <Redirect to="/404"/> */}
         </Switch>
