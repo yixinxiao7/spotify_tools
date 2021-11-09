@@ -7,17 +7,13 @@ const REDIRECT_URI = "http://localhost:8000/home";  // TODO: change this
 const SCOPES = [
     'playlist-modify-public',
     'playlist-modify-private',
-    'user-read-currently-playing'
+    'user-read-currently-playing',
+    'user-read-private',
+    'user-read-email'
 ];
 const SCOPES_URI_PARAMS = SCOPES.join("%20");
 
 const Login = () => {
-    
-    useEffect(() => {
-        if (window.location.hash) {
-            handleRedirect(window.location.hash)
-        }
-    })
 
     const handleLogin = () => {
         window.location = `${AUTHORIZE_ENDPOINT}` +
@@ -26,29 +22,6 @@ const Login = () => {
         `&scope=${SCOPES_URI_PARAMS}` + 
         `&response_type=token` + 
         `&show_dialog=true`;
-    }
-    
-    /** Get and store all parameters returned by spotify after the user is logged in*/
-    const handleRedirect = (hash) => {
-        // parse returned parameters
-        const uriParams = hash.substring(1);
-        const splitParams = uriParams.split("&");
-        const reducedParams = splitParams.reduce((accumulator, currVal) => {
-            const [key, val] = currVal.split("=")
-            accumulator[key] = val;
-            return accumulator;
-        }, {});
-        const {
-            access_token,
-            expires_in,
-            token_type
-        } = reducedParams;
-
-        // store parameters
-        localStorage.clear();
-        localStorage.setItem("accessToken", access_token);
-        localStorage.setItem("expiresIn", expires_in);
-        localStorage.setItem("tokenType", token_type);
     }
 
     return(
