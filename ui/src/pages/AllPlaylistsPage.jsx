@@ -9,6 +9,7 @@ const AllPlaylistsPage = () => {
     const [playlists, setPlaylists] = useState({})
     const [token, setToken] = useState("")
     const history = useHistory()
+    const songsPerPage = 5
 
     useEffect(() => {
         if (token === "") {
@@ -32,7 +33,11 @@ const AllPlaylistsPage = () => {
         event.preventDefault()
         history.push({
             pathname: `/playlists/${playlist.id}`,
-            state: {id: playlist.id, name: playlist.name}
+            state: {
+                id: playlist.id,
+                name: playlist.name,
+                itemsPerPage: songsPerPage
+            }
         })
     }
 
@@ -41,7 +46,8 @@ const AllPlaylistsPage = () => {
             <button onClick={e => pushToSongsPage(e, 
                 {
                     id: 'likedsongs',
-                    name: 'Liked Songs'
+                    name: 'Liked Songs',
+                    itemsPerPage: songsPerPage,
                 })
                 }>
                 Liked Songs
