@@ -9,7 +9,9 @@ const PlaylistPage = () => {
     const [token, setToken] = useState("")
     const location = useLocation()
 
-    const PLAYLIST_ENDPOINT = `https://api.spotify.com/v1/playlists/${location.state.id}/tracks`
+    const PLAYLIST_ENDPOINT = location.state.id === 'likedsongs' ? 
+        'https://api.spotify.com/v1/me/tracks' :
+        `https://api.spotify.com/v1/playlists/${location.state.id}/tracks`
 
     useEffect(() => {
         if (token === "") {

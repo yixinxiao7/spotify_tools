@@ -38,6 +38,14 @@ const AllPlaylistsPage = () => {
 
     return(
         <div>
+            <button onClick={e => pushToSongsPage(e, 
+                {
+                    id: 'likedsongs',
+                    name: 'Liked Songs'
+                })
+                }>
+                Liked Songs
+            </button>
             {playlists.items && 
              playlists.items.map((playlist, idx) => {
                 return(

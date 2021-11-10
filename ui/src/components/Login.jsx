@@ -9,7 +9,8 @@ const SCOPES = [
     'playlist-modify-private',
     'user-read-currently-playing',
     'user-read-private',
-    'user-read-email'
+    'user-read-email',
+    'user-library-read'
 ]
 const SCOPES_URI_PARAMS = SCOPES.join("%20")
 
