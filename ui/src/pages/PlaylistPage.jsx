@@ -1,10 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
-const PLAYLIST_ENDPOINT = "	https://api.spotify.com/v1/me/playlists";
+import React, {useEffect, useState} from 'react'
+import PropTypes from 'prop-types';
+import { useHistory, useLocation } from 'react-router'
+import axios from "axios"
 
-const PlaylistPage = () => {
-    const [playlists, setPlaylists] = useState({})
+
+const PlaylistPage = (props) => {
+    const [playlist, setPlaylist] = useState({})
     const [token, setToken] = useState("")
+    const location = useLocation()
+    const history = useHistory()
+
+    const PLAYLIST_ENDPOINT = `https://api.spotify.com/v1/playlists/${location.state.id}/tracks`
 
     useEffect(() => {
         if (token === "") {
@@ -17,7 +23,8 @@ const PlaylistPage = () => {
                     Authorization: "Bearer " + token
                 }
             }).then((res) => {
-                setPlaylists(res.data)
+                console.log(res.data)
+                setPlaylist(res.data)
             }).catch((e) => {
                 console.error(`COULD NOT RETRIEVE USER PLAYLISTS. ${e}`)
             })
@@ -26,12 +33,13 @@ const PlaylistPage = () => {
 
     return(
         <div>
-            {playlists.items && 
-             playlists.items.map((playlist, idx) => {
-                return(<p key={idx}> {playlist.name} </p>)
+            <h1> {location.state.name} </h1>
+            {playlist.items && playlist.items.map((song, idx) => {
+                return(<p>{song.track.name}</p>)
             })}
         </div>
     )
+    
 }
 
-export default PlaylistPage;
+export default PlaylistPage

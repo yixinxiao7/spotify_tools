@@ -1,5 +1,5 @@
-import React from 'react';
-import Login from '../components/Login.jsx';
+import React from 'react'
+import Login from '../components/Login.jsx'
 
 
 const OnboardingPage = () => {
@@ -16,4 +16,4 @@ const OnboardingPage = () => {
     )
 }
 
-export default OnboardingPage;
+export default OnboardingPage

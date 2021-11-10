@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { useHistory  } from 'react-router';
-import axios from "axios";
+import React, { useEffect, useState } from 'react'
+import { useHistory  } from 'react-router'
+import axios from "axios"
 
 
-const USER_ENDPOINT = "https://api.spotify.com/v1/me";
+const USER_ENDPOINT = "https://api.spotify.com/v1/me"
 
 const HomePage = () => {
     const [token, setToken] = useState("")
     const [userData, setUserData] = useState({})
-    const history = useHistory();
+    const history = useHistory()
 
     useEffect(() => {
         if (token === "" && window.location.hash) {
             handleRedirect(window.location.hash)
-        }
-        if (token !== "") {
+        } else {
             getUserData()
         }
     }, [token])
@@ -22,12 +21,12 @@ const HomePage = () => {
      /** Get and store all parameters returned by spotify after the user is logged in*/
      const handleRedirect = (hash) => {
         // parse returned parameters
-        const uriParams = hash.substring(1);
-        const splitParams = uriParams.split("&");
+        const uriParams = hash.substring(1)
+        const splitParams = uriParams.split("&")
         const reducedParams = splitParams.reduce((accumulator, currVal) => {
             const [key, val] = currVal.split("=")
-            accumulator[key] = val;
-            return accumulator;
+            accumulator[key] = val
+            return accumulator
         }, {});
         const {
             access_token,
@@ -37,9 +36,9 @@ const HomePage = () => {
 
         // store parameters
         localStorage.clear();
-        localStorage.setItem("accessToken", access_token);
-        localStorage.setItem("expiresIn", expires_in);
-        localStorage.setItem("tokenType", token_type);
+        localStorage.setItem("accessToken", access_token)
+        localStorage.setItem("expiresIn", expires_in)
+        localStorage.setItem("tokenType", token_type)
 
         // set token
         setToken(access_token)
@@ -64,7 +63,7 @@ const HomePage = () => {
         console.log(userData)
     }
 
-    const pushToPlaylistPage = () => {
+    const pushToPlaylistsPage = () => {
         history.push("/playlists")
     }
 
@@ -74,10 +73,10 @@ const HomePage = () => {
                 Welcome {userData.display_name ? userData.display_name : ''}
             </h2>
             <button onClick={test}>get stuff </button>
-            <button onClick={pushToPlaylistPage}> Check out your playlists </button>
+            <button onClick={pushToPlaylistsPage}> Check out your playlists </button>
         </div>
         
     )
 }
 
-export default HomePage;
+export default HomePage
