@@ -63,6 +63,7 @@ const PlaylistPage = () => {
                         key={idx}
                         name={song.track.name}
                         artists={getSongArtists(song)}
+                        image={song.track.album.images[2].url}
                     />
                 )
             })}

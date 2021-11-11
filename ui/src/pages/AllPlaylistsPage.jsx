@@ -9,7 +9,7 @@ const AllPlaylistsPage = () => {
     const [playlists, setPlaylists] = useState({})
     const [token, setToken] = useState("")
     const history = useHistory()
-    const songsPerPage = 5
+    const songsPerPage = 50
 
     useEffect(() => {
         if (token === "") {
