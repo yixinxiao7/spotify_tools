@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from 'react'
+import { Container,
+         Row } from 'react-bootstrap';
 import { useLocation } from 'react-router'
 import axios from "axios"
 import ReactPaginate from 'react-paginate';
@@ -51,20 +53,22 @@ const PlaylistPage = () => {
 
     const handlePageClick = (event) => {
         const newOffset = (event.selected * itemsPerPage) % totalSongs
-        setItemOffset(newOffset);
+        setItemOffset(newOffset)
+        window.scrollTo(0, 0)
     }
 
     return(
-        <div>
+        <Container style={{width:'50%'}}>
             <h1> {location.state.name} </h1>
             {playlist && playlist.map((song, idx) => {
                 return(
-                    <SongQuickView 
-                        key={idx}
-                        name={song.track.name}
-                        artists={getSongArtists(song)}
-                        image={song.track.album.images[2].url}
-                    />
+                    <Row key={idx} className="py-1">
+                        <SongQuickView
+                            name={song.track.name}
+                            artists={getSongArtists(song)}
+                            image={song.track.album.images[2].url}
+                        />
+                    </Row>
                 )
             })}
             <ReactPaginate
@@ -76,7 +80,7 @@ const PlaylistPage = () => {
                 previousLabel="<"
                 renderOnZeroPageCount={null}
             />
-        </div>
+        </Container>
     )
     
 }

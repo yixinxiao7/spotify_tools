@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Button } from 'react-bootstrap';
 import { useHistory  } from 'react-router'
 import axios from "axios"
 
@@ -72,8 +73,8 @@ const HomePage = () => {
             <h2>
                 Welcome {userData.display_name ? userData.display_name : ''}
             </h2>
-            <button onClick={test}>get stuff </button>
-            <button onClick={pushToPlaylistsPage}> Check out your playlists </button>
+            <Button onClick={test}>get stuff </Button>
+            <Button onClick={pushToPlaylistsPage}> Check out your playlists </Button>
         </div>
         
     )

@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from 'react'
+import { Container,
+         Button } from 'react-bootstrap';
 import { useHistory  } from 'react-router'
 import axios from "axios"
 
@@ -42,8 +44,8 @@ const AllPlaylistsPage = () => {
     }
 
     return(
-        <div>
-            <button onClick={e => pushToSongsPage(e, 
+        <Container>
+            <Button onClick={e => pushToSongsPage(e, 
                 {
                     id: 'likedsongs',
                     name: 'Liked Songs',
@@ -51,17 +53,17 @@ const AllPlaylistsPage = () => {
                 })
                 }>
                 Liked Songs
-            </button>
+            </Button>
             {playlists.items && 
              playlists.items.map((playlist, idx) => {
                 return(
-                    <button 
+                    <Button 
                         key={idx} 
                         onClick={e => pushToSongsPage(e, playlist)} > 
                         {playlist.name} 
-                    </button>)
+                    </Button>)
             })}
-        </div>
+        </Container>
     )
 }
 
