@@ -62,7 +62,8 @@ const PlaylistPage = () => {
                     <SongQuickView 
                         key={idx}
                         name={song.track.name}
-                        artists={getSongArtists(song)}/>
+                        artists={getSongArtists(song)}
+                    />
                 )
             })}
             <ReactPaginate

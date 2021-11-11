@@ -5,6 +5,7 @@ const CLIENT_ID = "f302afa9ce974067be62558b9cbcca0f"
 const AUTHORIZE_ENDPOINT = "https://accounts.spotify.com/authorize"
 const REDIRECT_URI = "http://localhost:8000/home"  // TODO: change this
 const SCOPES = [
+    'playlist-read-private',
     'playlist-modify-public',
     'playlist-modify-private',
     'user-read-currently-playing',
@@ -15,7 +16,6 @@ const SCOPES = [
 const SCOPES_URI_PARAMS = SCOPES.join("%20")
 
 const Login = () => {
-
     const handleLogin = () => {
         window.location = `${AUTHORIZE_ENDPOINT}` +
         `?client_id=${CLIENT_ID}` +
