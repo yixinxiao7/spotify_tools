@@ -64,9 +64,13 @@ const PlaylistPage = () => {
                 return(
                     <Row key={idx} className="py-1">
                         <SongQuickView
+                            id={song.track.id}
                             name={song.track.name}
                             artists={getSongArtists(song)}
                             image={song.track.album.images[2].url}
+                            allPlayListIDs={location.state.allPlaylistIDs}
+                            playlistNames={location.state.playlistNames}
+                            playlistLengths={location.state.playlistLengths}
                         />
                     </Row>
                 )
