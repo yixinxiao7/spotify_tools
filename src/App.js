@@ -7,7 +7,7 @@ import OnboardingPage from './pages/OnboardingPage'
 import HomePage from './pages/HomePage'
 import AllPlaylistsPage from './pages/AllPlaylistsPage.jsx'
 import PlaylistPage from "./pages/PlaylistPage"
-
+import SongPage from "./pages/SongPage"
 
 class App extends Component {
   render() {
@@ -18,6 +18,7 @@ class App extends Component {
           <Route exact path="/home" element={<HomePage/>} />
           <Route exact path="/playlists" element={<AllPlaylistsPage/>} />
           <Route exact path="/playlists/:id" element={<PlaylistPage/>} />
+          <Route exact path="/songs/:id" element={<SongPage/>} />
           {/* <Route exact path="/404" component = {NotFound}/> */}
           {/* <Redirect to="/404"/> */}
         </Routes>

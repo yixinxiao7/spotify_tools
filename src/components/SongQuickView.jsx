@@ -8,6 +8,7 @@ import { Row,
 import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
 import axios from "axios";
+import { useNavigate  } from 'react-router'
 
 const SongQuickView = (props) => {
     const [token, setToken] = useState("")
@@ -15,6 +16,7 @@ const SongQuickView = (props) => {
     const [inPlaylists, setInPlaylists] = useState([])
     const [notInPlaylists, setNotInPlaylists] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate()
 
     const spinnerStyle = {
         position: 'relative',
@@ -108,6 +110,10 @@ const SongQuickView = (props) => {
         setIsFlipped(!isFlipped)
     }
 
+    const pushToSongPage = () => {
+        navigate(`/songs/${props.id}`)
+    }
+
     return(
         <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical">
             <Card>
@@ -156,7 +162,18 @@ const SongQuickView = (props) => {
                             </Col>
                         </Row>
                     </Card.Body>}
-                <Button onClick={flipCard} disabled={isLoading}>Go back</Button>
+                <Card.Footer>
+                    <Row>
+                        <Col xs={6}>
+                            <Button onClick={flipCard} disabled={isLoading} style={{float: 'right'}}>Go back</Button>
+                        </Col>
+                        <Col xs={6}>
+                            <Button onClick={pushToSongPage}>Modify Playlists</Button>
+                        </Col>
+                    </Row>
+                </Card.Footer>
+                
+                
             </Card>
         </ReactCardFlip>
 
