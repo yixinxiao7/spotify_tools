@@ -17,7 +17,7 @@ const SCOPES_URI_PARAMS = SCOPES.join("%20")
 
 const Login = () => {
     const handleLogin = () => {
-        window.location = `${AUTHORIZE_ENDPOINT}` +
+        window.location.href = `${AUTHORIZE_ENDPOINT}` +
         `?client_id=${CLIENT_ID}` +
         `&redirect_uri=${REDIRECT_URI}` + 
         `&scope=${SCOPES_URI_PARAMS}` + 

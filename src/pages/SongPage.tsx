@@ -5,19 +5,23 @@ import { Container,
          Image} from 'react-bootstrap';
 import { useLocation } from 'react-router'
 import axios from "axios"
+import {
+    Track, Artist
+} from '../interfaces'
 
 
 const SongPage = () => {
-    const [token, setToken] = useState("")
-    const [track, setTrack] = useState({})
-    const [isLoading, setIsLoading] = useState(true)
+    const [token, setToken] = useState<string>("")
+    const [track, setTrack] = useState<Track>()
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [isError, setIsError] = useState<boolean>(false)
 
     const SONG_ENDPOINT = "	https://api.spotify.com/v1/tracks/"
             
     useEffect(() => {
         if (token === "") {
             if (localStorage.getItem("accessToken")) {
-                setToken(localStorage.getItem("accessToken"))
+                setToken(localStorage.getItem("accessToken")!)
             }
         } else {
             const songId = window.location.pathname.split('/')[2]
@@ -30,10 +34,12 @@ const SongPage = () => {
                     })
                     console.log(res.data)
                     setTrack(res.data)
-                    setIsLoading(false)
+                    
                 } catch (e) {
-                    console.error(`COULD NOT RETRIEVE USER PLAYLISTS. ${e}`)
+                    console.error(`COULD NOT RETRIEVE SONG. ${e}`)
+                    setIsError(true)
                 }
+                setIsLoading(false)
             }
             fetchData()
         }
@@ -42,15 +48,18 @@ const SongPage = () => {
 
     return(
         <Container style={{width:'50%'}}>
-            {isLoading && <Spinner />}
+            {isLoading && <Spinner animation="border"/>}
+            {isError && <div>
+                Could not retrieve the requested song. Please try again later.
+            </div> }
             {!isLoading && 
                 <div>
                     <div>
-                        {track.name}
+                        {track!.name}
                     </div>
-                    <Image src={track.album.images[1].url} className="py-2"/>
+                    <Image src={track!.album.images[1].url} className="py-2"/>
                     <div>
-                        {track.artists.map(artist => {
+                        {track!.artists.map((artist: Artist) => {
                             return (<p>{artist.name}</p>)
                         })}
                     </div>

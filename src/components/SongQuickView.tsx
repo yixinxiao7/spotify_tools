@@ -5,28 +5,42 @@ import { Row,
          Card,
          Button,
          Spinner } from 'react-bootstrap';
-import PropTypes from 'prop-types';
 import ReactCardFlip from 'react-card-flip';
 import axios from "axios";
 import { useNavigate  } from 'react-router'
+import {
+    PlaylistEntry
+} from '../interfaces'
 
-const SongQuickView = (props) => {
-    const [token, setToken] = useState("")
-    const [isFlipped, setIsFlipped] = useState(false)
-    const [inPlaylists, setInPlaylists] = useState([])
-    const [notInPlaylists, setNotInPlaylists] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
+type SongQuickViewProps = {
+    id: string
+    name: string
+    artists: string[]
+    image: string
+    allPlayListIDs: string[]
+    playlistNames: string[],
+    playlistLengths: number[]
+  };
+
+  
+const SongQuickView = ({id, 
+        name, 
+        artists, 
+        image, 
+        allPlayListIDs, 
+        playlistNames, 
+        playlistLengths}: SongQuickViewProps) => {
+    const [token, setToken] = useState<string>("")
+    const [isFlipped, setIsFlipped] = useState<boolean>(false)
+    const [inPlaylists, setInPlaylists] = useState<string[]>([])
+    const [notInPlaylists, setNotInPlaylists] = useState<string[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const navigate = useNavigate()
-
-    const spinnerStyle = {
-        position: 'relative',
-        left: '48%',
-    }
 
     useEffect(() => {
         if (token === "") {
             if (localStorage.getItem("accessToken")) {
-                setToken(localStorage.getItem("accessToken"))
+                setToken(localStorage.getItem("accessToken")!)
             }
         } 
         if (isFlipped){
@@ -42,10 +56,10 @@ const SongQuickView = (props) => {
         const _inPlayLists = []
         const _notInPlaylists = []
         // const playlistLoopPromise = new Promise(async (resolve, reject) => {
-        for (let i=0; i < props.allPlayListIDs.length; i++) {  // iterate through playlists
-            const playlistID = props.allPlayListIDs[i]
-            const playlistName = props.playlistNames[i]
-            let totalSongs = props.playlistLengths[i]
+        for (let i=0; i < allPlayListIDs.length; i++) {  // iterate through playlists
+            const playlistID = allPlayListIDs[i]
+            const playlistName = playlistNames[i]
+            let totalSongs = playlistLengths[i]
 
             // loop through all songs In the playlist by increments of 100
             const numLoops = Math.ceil(totalSongs / 100)
@@ -57,18 +71,17 @@ const SongQuickView = (props) => {
                     break
                 }
                 const PLAYLIST_ENDPOINT = `https://api.spotify.com/v1/playlists/${playlistID}/tracks?limit=${limit}&offset=${offset}`
-                console.log("CALLING: " + PLAYLIST_ENDPOINT)
                 try {
                     const res = await axios.get(PLAYLIST_ENDPOINT, {
                         headers: {
                             Authorization: "Bearer " + token
                         }
                     })
-                    const items = res.data.items
+                    const items: PlaylistEntry[] = res.data.items
                     // eslint-disable-next-line no-loop-func
                     items.every(song => {
                         const songID = song.track.id
-                        if (songID === props.id) {
+                        if (songID === id) {
                             isInPlaylist = true
                             return false  // break loop
                         }
@@ -81,7 +94,6 @@ const SongQuickView = (props) => {
                         totalSongs -= 100  // processed a MAX of 100 songs
                         limit = totalSongs > 100 ? 100 : totalSongs
                         offset += 100
-                        console.log(offset)
                     }
                 } catch (e) {
                     console.error(`COULD NOT RETRIEVE USER PLAYLIST ${playlistID}. ${e}`)
@@ -97,9 +109,9 @@ const SongQuickView = (props) => {
     }
 
     const formatArtists = () => {
-        const artists = props.artists.join(' & ')
+        const formattedArtists = artists.join(' & ')
         return(
-            <p> {artists} </p>
+            <p> {formattedArtists} </p>
         )
     }
 
@@ -111,7 +123,7 @@ const SongQuickView = (props) => {
     }
 
     const pushToSongPage = () => {
-        navigate(`/songs/${props.id}`)
+        navigate(`/songs/${id}`)
     }
 
     return(
@@ -119,12 +131,12 @@ const SongQuickView = (props) => {
             <Card>
                 <Row className="px-2">
                     <Col xs={'auto'}>
-                        <Image src={props.image} className="py-2"/>
+                        <Image src={image} className="py-2"/>
                     </Col>
                     <Col xs={'auto'}>
                         <Row>
                         <p>
-                            {props.name}
+                            {name}
                         </p>
                         </Row>
                         <Row>
@@ -136,7 +148,13 @@ const SongQuickView = (props) => {
             </Card>
 
             <Card>
-                {isLoading && <Spinner animation="border" style={spinnerStyle}/>}
+                {isLoading && 
+                    <Spinner 
+                        animation="border" 
+                        style={{
+                            position: 'relative',
+                            left: '48%',
+                        }}/>}
                 {!isLoading && 
                     <Card.Body>
                         <Row>
@@ -179,17 +197,6 @@ const SongQuickView = (props) => {
 
         
     )
-}
-
-SongQuickView.propTypes = {
-    id: PropTypes.string,
-    name: PropTypes.string,
-    artists: PropTypes.array,
-    image: PropTypes.string,
-    allPlayListIDs: PropTypes.array,
-    playlistNames: PropTypes.array,
-    playlistLengths: PropTypes.array,
-    totalSongs: PropTypes.number
 }
 
 export default SongQuickView

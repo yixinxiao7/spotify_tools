@@ -5,13 +5,25 @@ import { useLocation } from 'react-router'
 import axios from "axios"
 import ReactPaginate from 'react-paginate';
 
-import SongQuickView from '../components/SongQuickView.jsx'
+import SongQuickView from '../components/SongQuickView'
+import {
+    PlaylistEntry, Artist
+} from '../interfaces'
 
+interface LocationState {
+    id: string
+    itemsPerPage: number
+    name: string
+    allPlaylistIDs: string[]
+    playlistNames: string[]
+    playlistLengths: number[]
+}
 
 const PlaylistPage = () => {
-    const [token, setToken] = useState("")
+    const [token, setToken] = useState<string>("")
     const location = useLocation()
-    const itemsPerPage = location.state.itemsPerPage
+    const locationState = location.state as LocationState
+    const { itemsPerPage } = locationState
 
     // pagination states
     const [totalSongs, setTotalSongs] = useState(0)
@@ -19,14 +31,14 @@ const PlaylistPage = () => {
     const [pageCount, setPageCount] = useState(0)
     const [itemOffset, setItemOffset] = useState(0)
 
-    const PLAYLIST_ENDPOINT = location.state.id === 'likedsongs' ? 
+    const PLAYLIST_ENDPOINT = locationState.id === 'likedsongs' ? 
         `https://api.spotify.com/v1/me/tracks` :
-        `https://api.spotify.com/v1/playlists/${location.state.id}/tracks`
+        `https://api.spotify.com/v1/playlists/${locationState.id}/tracks`
             
     useEffect(() => {
         if (token === "") {
             if (localStorage.getItem("accessToken")) {
-                setToken(localStorage.getItem("accessToken"))
+                setToken(localStorage.getItem("accessToken")!)
             }
         } else {
             async function fetchData() {
@@ -38,6 +50,7 @@ const PlaylistPage = () => {
                             Authorization: "Bearer " + token
                         }
                     })
+                    console.log(res.data)
                     setPlaylist(res.data.items)
                     setTotalSongs(res.data.total)
                     setPageCount(Math.ceil(res.data.total / itemsPerPage))
@@ -49,13 +62,13 @@ const PlaylistPage = () => {
         }
     }, [token, itemOffset])
 
-    const getSongArtists = (song) => {
-        return song.track.artists.map((artist) => {
+    const getSongArtists = (song: PlaylistEntry) => {
+        return song.track.artists.map((artist: Artist) => {
             return artist.name
         })
     }
 
-    const handlePageClick = (event) => {
+    const handlePageClick = (event: any) => {
         const newOffset = (event.selected * itemsPerPage) % totalSongs
         setItemOffset(newOffset)
         window.scrollTo(0, 0)
@@ -63,8 +76,8 @@ const PlaylistPage = () => {
 
     return(
         <Container style={{width:'50%'}}>
-            <h1> {location.state.name} </h1>
-            {playlist && playlist.map((song, idx) => {
+            <h1> {locationState.name} </h1>
+            {playlist && playlist.map((song: PlaylistEntry, idx) => {
                 return(
                     <Row key={idx} className="py-1">
                         <SongQuickView
@@ -72,9 +85,9 @@ const PlaylistPage = () => {
                             name={song.track.name}
                             artists={getSongArtists(song)}
                             image={song.track.album.images[2].url}
-                            allPlayListIDs={location.state.allPlaylistIDs}
-                            playlistNames={location.state.playlistNames}
-                            playlistLengths={location.state.playlistLengths}
+                            allPlayListIDs={locationState.allPlaylistIDs}
+                            playlistNames={locationState.playlistNames}
+                            playlistLengths={locationState.playlistLengths}
                         />
                     </Row>
                 )
@@ -86,7 +99,7 @@ const PlaylistPage = () => {
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
                 previousLabel="<"
-                renderOnZeroPageCount={null}
+                // renderOnZeroPageCount={null}
             />
         </Container>
     )

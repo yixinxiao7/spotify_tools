@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { useNavigate  } from 'react-router'
 import axios from "axios"
+import { LoggedUser } from '../interfaces'
 
 
 const USER_ENDPOINT = "https://api.spotify.com/v1/me"
 
 const HomePage = () => {
     const [token, setToken] = useState("")
-    const [userData, setUserData] = useState({})
+    const [userData, setUserData] = useState<LoggedUser|undefined>(undefined)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -20,11 +21,11 @@ const HomePage = () => {
     }, [token])
 
      /** Get and store all parameters returned by spotify after the user is logged in*/
-     const handleRedirect = (hash) => {
+     const handleRedirect = (hash: any) => {
         // parse returned parameters
         const uriParams = hash.substring(1)
         const splitParams = uriParams.split("&")
-        const reducedParams = splitParams.reduce((accumulator, currVal) => {
+        const reducedParams = splitParams.reduce((accumulator: any, currVal: string) => {
             const [key, val] = currVal.split("=")
             accumulator[key] = val
             return accumulator
@@ -58,23 +59,26 @@ const HomePage = () => {
         }
     } 
 
-    const test = () => {
-        console.log(userData)
-    }
-
     const pushToPlaylistsPage = () => {
         navigate("/playlists")
     }
 
     return(
         <div>
-            <h2>
-                Welcome {userData.display_name ? userData.display_name : ''}
-            </h2>
-            <Button onClick={test}>get stuff </Button>
-            <Button onClick={pushToPlaylistsPage}> Check out your playlists </Button>
+            {!userData && 
+                <div>
+                    <Spinner animation="border"/>
+                </div>
+            }
+            {userData && 
+                <div>
+                    <h2>
+                        Welcome {userData.display_name ? userData.display_name : ''}
+                    </h2>
+                    <Button onClick={pushToPlaylistsPage}> Check out your playlists </Button>
+                </div>
+            }
         </div>
-        
     )
 }
 

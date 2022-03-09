@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes , Redirect } from "react-router-dom"
 
 import OnboardingPage from './pages/OnboardingPage'
 import HomePage from './pages/HomePage'
-import AllPlaylistsPage from './pages/AllPlaylistsPage.jsx'
+import AllPlaylistsPage from './pages/AllPlaylistsPage'
 import PlaylistPage from "./pages/PlaylistPage"
 import SongPage from "./pages/SongPage"
 
