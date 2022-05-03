@@ -50,7 +50,6 @@ const PlaylistPage = () => {
                             Authorization: "Bearer " + token
                         }
                     })
-                    console.log(res.data)
                     setPlaylist(res.data.items)
                     setTotalSongs(res.data.total)
                     setPageCount(Math.ceil(res.data.total / itemsPerPage))

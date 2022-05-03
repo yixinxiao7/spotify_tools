@@ -30,7 +30,6 @@ const AllPlaylistsPage = () => {
                             Authorization: "Bearer " + token
                         }
                     })
-                    console.log(res.data)
                     setPlaylists(res.data) 
                 } catch (e) {
                     console.error(`COULD NOT RETRIEVE USER PLAYLISTS. ${e}`)
