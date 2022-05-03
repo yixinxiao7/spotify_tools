@@ -17,6 +17,10 @@ import {
     PlaylistEntry
 } from '../interfaces'
 
+interface Playlist {
+    id: string
+    name: string
+}
 
 const SongPage = () => {
     const [token, setToken] = useState<string>("")
@@ -24,10 +28,14 @@ const SongPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isError, setIsError] = useState<boolean>(false)
     const [allPlaylists, setAllPlaylists] = useState<AllPlaylists|undefined>(undefined)
-    const [inPlaylists, setInPlaylists] = useState<string[]>([])
-    const [notInPlaylists, setNotInPlaylists] = useState<string[]>([])
+    const [inPlaylists, setInPlaylists] = useState<Playlist[]>([])
+    const [notInPlaylists, setNotInPlaylists] = useState<Playlist[]>([])
     const [playlistsAreLoading, setPlaylistsAreLoading] = useState<boolean>(true)
+
+    /** Modal supporting states */
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
+    const [newInPlaylists, setNewInPlaylists] = useState<Playlist[]>([])
+    const [newNotInPlaylist, setNewNotInPlaylists] = useState<Playlist[]>([])
 
     const SONG_ENDPOINT = "	https://api.spotify.com/v1/tracks/"
     const PLAYLISTS_ENDPOINT = "https://api.spotify.com/v1/me/playlists"
@@ -78,8 +86,8 @@ const SongPage = () => {
 
     /** Fetches playlists the song is in and is not in */
     const organizePlaylists = async () => {
-        const _inPlayLists = []
-        const _notInPlaylists = []
+        const _inPlayLists: Playlist[] = []
+        const _notInPlaylists: Playlist[] = []
         // const playlistLoopPromise = new Promise(async (resolve, reject) => {
         const playlists: PlaylistGeneralEntry[] = allPlaylists!.items
         for (let i=0; i < playlists.length; i++) {  // iterate through playlists
@@ -113,7 +121,11 @@ const SongPage = () => {
                         return true
                     })
                     if (isInPlaylist) {
-                        _inPlayLists.push(playlistName);
+                        const item: Playlist = {
+                            id: playlistID,
+                            name: playlistName
+                        }
+                        _inPlayLists.push(item);
                         totalSongs = -1  // break out of loop to reduce api calls
                     } else {  // cotinue processing
                         totalSongs -= 100  // processed a MAX of 100 songs
@@ -125,7 +137,11 @@ const SongPage = () => {
                 }
             }
             if (!isInPlaylist) {
-                _notInPlaylists.push(playlistName)
+                const item: Playlist = {
+                    id: playlistID,
+                    name: playlistName
+                }
+                _notInPlaylists.push(item)
             }
         }
         setInPlaylists(_inPlayLists)
@@ -139,6 +155,45 @@ const SongPage = () => {
             return title.slice(0,truncateLength) + '...'
         }
         return title
+    }
+
+    /** MODAL FUNCTIONS */
+    /** Populate modal supporting states */
+    const openModal = () => {
+        setNewInPlaylists(inPlaylists)
+        setNewNotInPlaylists(notInPlaylists)
+        setModalIsOpen(true)
+
+    }
+    /** Destroy modal supporting states */
+    const closeModal = () => {
+        setNewInPlaylists([])
+        setNewNotInPlaylists([])
+        setModalIsOpen(false)
+    }
+
+    const addToPlaylist = (event: any, playlist: Playlist) => {
+        /** remove from notInPlaylist state */
+        const idToRemove = playlist.id
+        const tempNotInPlaylists = newNotInPlaylist.filter((playlist: Playlist) => playlist.id != idToRemove)
+        setNewNotInPlaylists(tempNotInPlaylists)
+        
+        /** add to inPlaylist state */
+        const tempInPlaylists = newInPlaylists.slice()
+        tempInPlaylists.push(playlist)
+        setNewInPlaylists(tempInPlaylists)
+    }
+
+    const removeFromPlaylist = (event: any, playlist: Playlist) => {
+        /** remove from inPlayliststate */
+        const idToRemove = playlist.id
+        const tempInPlaylists = newInPlaylists.filter((playlist: Playlist) => playlist.id != idToRemove)
+        setNewInPlaylists(tempInPlaylists)
+        
+        /** add to notInPlaylist state */
+        const tempNotInPlaylists = newNotInPlaylist.slice()
+        tempNotInPlaylists.push(playlist)
+        setNewNotInPlaylists(tempNotInPlaylists)
     }
 
     return(
@@ -168,8 +223,8 @@ const SongPage = () => {
                                         In these playlists:
                                     </Row>
                                     <Row>
-                                        {inPlaylists.map(playlistName => {
-                                            return <p> {playlistName} </p>
+                                        {inPlaylists.map((playlist: Playlist) => {
+                                            return <p> {playlist.name} </p>
                                         })}
                                     </Row>
                                 </Col>
@@ -178,14 +233,14 @@ const SongPage = () => {
                                         Not in these playlists: 
                                     </Row>
                                     <Row>
-                                        {notInPlaylists.map(playlistName => {
-                                            return <p> {playlistName} </p>
+                                        {notInPlaylists.map((playlist: Playlist) => {
+                                            return <p> {playlist.name} </p>
                                         })}
                                     </Row>
                                 </Col>
                             </Row>
                             <Row>
-                                <Button variant="outline-primary" onClick={() => setModalIsOpen(true)}>
+                                <Button variant="outline-primary" onClick={openModal}>
                                     What??
                                 </Button>
                             </Row>
@@ -193,7 +248,7 @@ const SongPage = () => {
                     }
                 </div>
             }
-            <Modal show={modalIsOpen} onHide={() => setModalIsOpen(false)}>
+            <Modal show={modalIsOpen} onHide={closeModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Adjust playlists</Modal.Title>
                 </Modal.Header>
@@ -212,13 +267,32 @@ const SongPage = () => {
                     </Row>
                     <Row>
                         <Col>
-                            {inPlaylists.map(playlistName => {
-                                return <p> {truncate(playlistName)} </p>
+                            {newInPlaylists.map((playlist: Playlist) => {
+                                return( 
+                                    <div className="py-1">
+                                        <Button
+                                            variant="outline-secondary"
+                                            onClick={e => removeFromPlaylist(e, playlist)}
+                                            > 
+                                            {truncate(playlist.name)} 
+                                        </Button>
+                                    </div>
+                                    
+                                )
                             })}
                         </Col>
                         <Col>
-                            {notInPlaylists.map(playlistName => {
-                                return <p> {truncate(playlistName)} </p>
+                            {newNotInPlaylist.map((playlist: Playlist) => {
+                                return( 
+                                    <div className="py-1">
+                                        <Button 
+                                            variant="outline-secondary"
+                                            onClick={e => addToPlaylist(e, playlist)}
+                                            > 
+                                            {truncate(playlist.name)}  
+                                        </Button>
+                                    </div>
+                                )
                             })}
                         </Col>
                     </Row>
